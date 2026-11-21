@@ -79,3 +79,73 @@ Execute the automated test suite with pytest:
 2. **Speed Measurement Scope**: The speed benchmark measures model scoring and inference throughput in memory only (`predict_proba`). It does not measure end-to-end network packet capture, stream ingestion, feature computation, or disk persistence overhead.
 3. **Rule Baseline Implementation**: The rule baseline consists of 5 hand-written domain-specific threshold rules fitted to the 99th percentile of benign training traffic, rather than a full stateful Wazuh SIEM engine or its complete production XML ruleset.
 4. **Time Window & Incident Grouping**: The `time_window` is strictly row-index based (`"basis": "row_index"`) due to the absence of packet timestamps in the training set. Incident correlation/grouping across multiple events into a single incident is not implemented.
+
+## SOAR Response Engine & Dashboard
+
+Governed response layer that consumes the correlation engine's alerts (`alerts_full.jsonl` or the `alerts.json` sample) and decides what to do with each one. Code is in `response_engine/`, the UI in `dashboard/`, and the tests in `tests/`.
+
+### Installation
+
+Uses the same virtual environment as above. `pip install -r requirements.txt` already includes the dashboard dependency (`streamlit>=1.49.0`; older versions fail because the dashboard uses `width="stretch"`).
+
+### Decision Tiers
+
+| Tier | Condition | Action |
+|------|-----------|--------|
+| `LOG_ONLY` | confidence < 0.50 (review floor) | Recorded only, nothing executed |
+| `REVIEW` | confidence < auto threshold (0.90), or held by the BDI gate | Analyst queue (capacity-limited, overflow is kept, never dropped) |
+| `AUTO_SOFT` | 0.90 <= confidence < 0.97 | `rate_limit_flow` / `step_up_mfa` |
+| `AUTO_HARD` | confidence >= 0.97 (hard threshold) | `block_flow` / `suspend_session` |
+
+All thresholds, the BDI limit and the queue capacity are set in one validated `Policy` object (`response_engine/policy.py`).
+
+### Safety Mechanisms
+
+- **Business Disruption Index (BDI) gate**: BDI = asset criticality (1-5) x action severity (soft 2, hard 5). An automatic action whose BDI exceeds the limit (default 12) is held for analyst approval even at high confidence.
+- **Fixed action catalog**: only actions listed in `response_engine/catalog.py` can run; anything else raises `UnknownAction`.
+- **Rollback ledger**: every executed action stores the prior state and its exact inverse; reverting verifies the restore and refuses (`StateDrift`) if the target changed in the meantime.
+- **Explanations**: every decision carries a plain-language reason built from the correlation trace (rules fired, top features).
+- **Feedback log**: analyst approvals, rejections and reverts are recorded. `suggest_threshold()` only suggests a value and never applies it.
+- **Fail closed**: a missing, NaN or out-of-range confidence raises an error instead of triggering an action.
+- Decisions never read ground truth; `ground_truth_family` is used only to score results.
+
+### Generating the Evaluation Alerts (held-out split)
+
+`--eval-split` scores only the held-out 30% of events. Pass `--alerts-json` a scratch path, otherwise the committed `alerts.json` is overwritten:
+
+```powershell
+.\.venv\Scripts\python.exe correlation_engine.py --train-csv data/UNSW_NB15_training-set.csv --eval-split --threshold 0.5 --alerts-json scratch/sample.json --alerts-full data/alerts_full.jsonl
+```
+
+### Running the Threshold Sweep
+
+```powershell
+.\.venv\Scripts\python.exe -m response_engine.evaluate data/alerts_full.jsonl
+.\.venv\Scripts\python.exe -m response_engine.evaluate data/alerts_full.jsonl --no-bdi-gate --out results/sweep_no_gate.csv
+```
+
+Results are written to `results/response_threshold_sweep.csv` (auto-response rate, auto precision, false auto-actions, attacks waiting in review, per threshold).
+
+### Running the Dashboard
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run dashboard/app.py
+```
+
+The dashboard loads `data/alerts_full.jsonl` if present, otherwise the `alerts.json` sample (or upload a file in the sidebar). It shows the decision log, analyst review queue, rollback ledger, feedback log and audit export.
+
+### Running All Tests
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -v tests/
+```
+
+`tests/test_engine.py` covers the correlation engine; the remaining test files cover the response engine.
+
+### Response Engine Limitations
+
+1. **Simulated actions**: actions change an in-memory state model; no real firewall or identity-provider calls are made.
+2. **No host data**: the alerts carry no host/IP, so actions target the flow itself (`flow-<event_id>`).
+3. **Simulated asset criticality**: criticality is derived from a stable hash of the target (replace it with `AssetRegistry.from_csv(...)` for a real inventory), so BDI figures illustrate the mechanism, not a real environment.
+4. **Biased sample**: `alerts.json` holds 50 highest-confidence plus 50 random alerts. Use `alerts_full.jsonl` for any reported numbers.
+5. **One active containment per target**, and the feedback loop stops at logging plus a threshold suggestion; automatic retraining is future work.
