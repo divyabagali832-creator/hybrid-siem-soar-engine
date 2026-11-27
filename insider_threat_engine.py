@@ -86,7 +86,7 @@ class InsiderThreatEngine:
 
         features["confidence"] = probabilities[:, threat_index]
         features["predicted_label"] = self.model.predict(X)
-        features["source"] = "RandomForest"
+        features["source"] = "insider_threat"
 
         rules = self.apply_rules(features)
         features = pd.concat(
