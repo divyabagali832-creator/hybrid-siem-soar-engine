@@ -75,29 +75,39 @@ class InsiderThreatEngine:
 
         return pd.DataFrame(results)
 
-    def predict(self, events):
+  def predict(self, events):
 
-        features = self.build_features(events)
+    features = self.build_features(events)
 
-        X = features[self.feature_columns]
-
-        probabilities = self.model.predict_proba(X)
-        threat_index = list(self.model.classes_).index(1)
-
-        features["confidence"] = probabilities[:, threat_index]
-        features["predicted_label"] = self.model.predict(X)
-        features["source"] = "insider_threat"
-
-        rules = self.apply_rules(features)
-        features = pd.concat(
-            [features.reset_index(drop=True), rules], axis=1
-        )
-
-        return features[[
+    if features.empty:
+        return pd.DataFrame(columns=[
             "user",
             "source",
             "confidence",
             "predicted_label",
             "rule_alert",
             "rule_reasons"
-        ]]
+        ])
+
+    X = features[self.feature_columns]
+
+    probabilities = self.model.predict_proba(X)
+    threat_index = list(self.model.classes_).index(1)
+
+    features["confidence"] = probabilities[:, threat_index]
+    features["predicted_label"] = self.model.predict(X)
+    features["source"] = "insider_threat"
+
+    rules = self.apply_rules(features)
+    features = pd.concat(
+        [features.reset_index(drop=True), rules], axis=1
+    )
+
+    return features[[
+        "user",
+        "source",
+        "confidence",
+        "predicted_label",
+        "rule_alert",
+        "rule_reasons"
+    ]]
