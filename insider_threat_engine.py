@@ -75,7 +75,7 @@ class InsiderThreatEngine:
 
         return pd.DataFrame(results)
 
-  def predict(self, events):
+ def predict(self, events):
 
     features = self.build_features(events)
 
