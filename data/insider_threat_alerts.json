@@ -1,7 +1,7 @@
 [
     {
         "user": "AJR0932",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.99,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -14,7 +14,7 @@
     },
     {
         "user": "BDV0168",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -28,7 +28,7 @@
     },
     {
         "user": "BIH0745",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.85,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -40,7 +40,7 @@
     },
     {
         "user": "BTL0226",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -54,7 +54,7 @@
     },
     {
         "user": "CAH0936",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -67,7 +67,7 @@
     },
     {
         "user": "EHB0824",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.81,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -79,7 +79,7 @@
     },
     {
         "user": "FTM0406",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.32,
         "predicted_label": 0,
         "rule_alert": 1,
@@ -91,7 +91,7 @@
     },
     {
         "user": "JMB0308",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -105,7 +105,7 @@
     },
     {
         "user": "KLH0596",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.88,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -118,7 +118,7 @@
     },
     {
         "user": "KPC0073",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -132,7 +132,7 @@
     },
     {
         "user": "MAS0025",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -145,7 +145,7 @@
     },
     {
         "user": "MDH0580",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.99,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -160,7 +160,7 @@
     },
     {
         "user": "MYD0978",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -174,7 +174,7 @@
     },
     {
         "user": "NWT0098",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.96,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -189,7 +189,7 @@
     },
     {
         "user": "PNL0301",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.62,
         "predicted_label": 1,
         "rule_alert": 0,
@@ -198,7 +198,7 @@
     },
     {
         "user": "PPF0435",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.77,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -211,7 +211,7 @@
     },
     {
         "user": "PSF0133",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.92,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -226,7 +226,7 @@
     },
     {
         "user": "RAB0589",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -240,7 +240,7 @@
     },
     {
         "user": "RAR0725",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -255,7 +255,7 @@
     },
     {
         "user": "TNM0961",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 1.0,
         "predicted_label": 1,
         "rule_alert": 1,
@@ -270,7 +270,7 @@
     },
     {
         "user": "WDD0366",
-        "source": "RandomForest",
+        "source": "insider_threat",
         "confidence": 0.94,
         "predicted_label": 1,
         "rule_alert": 1,
